@@ -72,7 +72,18 @@ ninja.data = [{
               handler: () => {
                 window.location.href = "/blog/";
               },
-            },{id: "post-a-post-with-plotly-js",
+            },{id: "post-attention-mechanisms-from-mha-to-deepseek-39-s-mla",
+        
+          title: "Attention Mechanisms: From MHA to DeepSeek&#39;s MLA",
+        
+        description: "An in-depth analysis of the KV Cache mechanism and the technological evolution from Multi-Head Attention (MHA) to Grouped-Query Attention (GQA), and finally to DeepSeek&#39;s revolutionary Multi-Head Latent Attention (MLA).",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/kvcache-and-attention/";
+          
+        },
+      },{id: "post-a-post-with-plotly-js",
         
           title: "a post with plotly.js",
         
