@@ -4,6 +4,25 @@
 
 @use "variables" as v;
 
+body {
+  font-family: 'Palatino Linotype';
+  src: url('../fonts/Palatino Linotype Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-size: 1.15rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Palatino Linotype';
+  src: url('../fonts/Palatino Linotype Italic.ttf') format('truetype');
+  font-weight: normal;
+  
+}
+
 p,
 h1,
 h2,
