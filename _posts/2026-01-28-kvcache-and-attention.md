@@ -66,6 +66,26 @@ The introduction of GQA brings the following key advantages:
 
 Currently, GQA has become the standard configuration for mainstream large language models (such as Llama 2/3, Mistral, Qwen 2.5, etc.) and is a core technology for solving modern inference workloads.
 
+#### Memory Optimization Formula
+
+GQA/MQA only modifies the number of Key (K) and Value (V) heads, while keeping the number of Query (Q) heads unchanged (to preserve the model's attention representation capability). Therefore, the Heads term in the original KV Cache formula should be replaced with the actual number of K/V heads ($Heads_{KV}$). The optimized formula is as follows:
+
+$
+Memory_{KVCache} = 2 \times BatchSize \times Layers \times Heads_{KV} \times Dim \times SeqLength \times BytesPerParam
+$
+
+**Memory Reduction Ratio**: It is directly equal to the grouping factor $G$ ($G = \text{Number of Q Heads} / \text{Number of KV Heads}$). In other words, the KV Cache memory footprint is reduced to $1/G$ of its original size, and the memory occupied by model weights remains almost unchanged (only minor adjustments are made to the parameters of attention layers).
+
+### 2.4 Practical Case Study on a 7B Model (Intuitive Demonstration)
+
+Let’s take the 7B model mentioned earlier ($Layers=32$, $Q \ Heads=32$, $Head \ Dimension=64$) as an example, adopting the industry-standard grouping factor $G=8$ (8 Q heads share one set of K/V heads):
+
+*   **Original MHA**: $Heads_{KV}=32$, KV Cache memory footprint for 80,000 tokens ≈ 640 GB
+*   **GQA ($G=8$)**: $Heads_{KV}=32/8=4$, KV Cache memory footprint for 80,000 tokens ≈ 640 GB / 8 = 80 GB (a reduction of 87.5%)
+*   **MQA (Extreme Optimization)**: $Heads_{KV}=1$, KV Cache memory footprint for 80,000 tokens ≈ 640 GB / 32 = 20 GB (a reduction of 93.75%)
+
+**Change in Total Inference Memory Footprint**: With GQA enabled, the total inference memory for processing 80,000 tokens is approximately 14 GB (model weights) + 80 GB (KV Cache) + 5 GB (temporary computation memory) ≈ 99 GB. This workload can be handled by only 2 A100 GPUs (80 GB each). Compared to the original requirement of 9 A100 GPUs, the hardware cost is reduced by over 70%.
+
 ## Chapter 3: Multi-Head Latent Attention (MLA): DeepSeek's Revolutionary Innovation
 
 ### 3.1 Core Logic of Latent Space Compression
